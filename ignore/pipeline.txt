@@ -1,0 +1,5 @@
+PIPELINE:
+1. DataTransformationForArima
+2. Arima 
+3. Ann
+4. Final Transformation 
