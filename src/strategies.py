@@ -7,7 +7,8 @@ from sklearn.model_selection import ParameterGrid
 
 
 class ArimaStrategy:
-    def __init__(self, start_p=1, max_p=3, start_q=1, max_q=3, seasonal=False, information_criterion='bic', preprocessors=None):
+    def __init__(self, start_p=1, max_p=5, start_q=1, max_q=5, seasonal=False,information_criterion='aic', preprocessors=None):
+        self.spec = "arima"
         self.start_p = start_p
         self.max_p = max_p
         self.start_q = start_q
@@ -40,6 +41,7 @@ class ArimaStrategy:
                 information_criterion=self.information_criterion,
                 error_action='ignore',
                 suppress_warnings=True,
+                test="adf",
                 trace=False))
         if trace:
             print("Process finished with no errors")
@@ -287,34 +289,5 @@ class _Validation:
             initial+=jump_size
         return np.vstack(ids)
         
-
-class _Validation2:
-    @staticmethod
-    def get_train_test(data, test_size, jump_size, min_train_size=30):
-        """
-        Returns [start_test_idx, end_test_idx] for Walk Forward Validation.
-        Ensures the first fold has at least 'min_train_size' data points.
-        """
-        n_timesteps = np.shape(data)[1]
-        
-        # We need at least (min_train + test_size) points to run one fold
-        if n_timesteps < min_train_size + test_size:
-            raise ValueError(f"Data length {n_timesteps} is too short for min_train {min_train_size} + test {test_size}")
-
-        ids = []
-        
-        # Start scanning from min_train_size
-        # current_start is the index where the TEST set begins
-        current_test_start = min_train_size
-        
-        while current_test_start + test_size <= n_timesteps:
-            ids.append([current_test_start, current_test_start + test_size])
-            current_test_start += jump_size
-            
-        return np.array(ids)
-    
-
-
-
 
         

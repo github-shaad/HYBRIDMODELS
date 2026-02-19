@@ -1,7 +1,6 @@
 """
 Preprocessors
 """
-
 from abc import ABC, abstractmethod
 import pandas as pd
 from numpy.lib.stride_tricks import sliding_window_view
@@ -74,73 +73,40 @@ class NormalizeByRow(BaseProcessor):
             res.append((series*self.std[i]) + self.mean[i])
         return np.vstack(res)
 
-class DiffByRow(BaseProcessor):
-    def __init__(self, anchor):
-        pass
 
+class LogDiffByRow(BaseProcessor):
+    def __init__(self):
+        # We store the LAST price of the training set to start the Test set
+        self.anchors = [] 
+
+    def fit_transform(self, data):
+        # Fit stores the last known price of each row in training
+        self.anchors = [series[-1] for series in data]
+        return self.transform(data)
+    
     def transform(self, data):
-        chunk = []
-        epsilon = 1e-8
-        for e in data:
-            safe_e = np.where(e <= 0, epsilon, e) 
-            row = np.log(safe_e)
-            row_diff = [row[0]] + [row[j] - row[j-1] for j in range(1, len(row))]
-            chunk.append(row_diff)
-        return np.vstack(chunk)
-
-    def inverse_transform(self, predictions, x_original=None):
-        if x_original is None:
-         
-            anchors = predictions[:, 0]
-            diffs = predictions[:, 1:]
-            chunk = []
-            for i, row in enumerate(diffs):
-                reconstructed_row = []
-  
-                reconstructed_row.append(np.exp(anchors[i])) 
-                
-                curr_log_price = anchors[i]
-                for diff in row:
-                    curr_log_price += diff
-                    reconstructed_row.append(np.exp(curr_log_price))
-                chunk.append(reconstructed_row)
-            return np.vstack(chunk)
-
-     
-        is_full_reconstruction = (predictions.shape == x_original.shape)
-
-        if is_full_reconstruction:
-             predictions_to_use = predictions[:, 1:]
-        else:
-             predictions_to_use = predictions
-
+        res = []
+        for series in data:
+            # We use np.diff on the logs
+            log_series = np.log(series)
+            # Prepend 0 to keep the same shape, or handle first element
+            diffs = np.zeros_like(log_series)
+            diffs[1:] = np.diff(log_series)
+            res.append(diffs)
+        return np.vstack(res)
     
-        offset = len(x_original) - len(predictions)
-        if offset > 0:
-            anchors = x_original[offset-1 : -1, -1] 
-            if len(anchors) != len(predictions): anchors = x_original[offset-1 : -1]
-        else:
-            anchors = x_original[:, 0]
-
-        chunk = []
-        for i, row in enumerate(predictions_to_use):
-            reconstructed_row = []
+    def inverse_transform(self, data):
+        res = []
+        for j, diff_series in enumerate(data):
+            # To get back, we need the cumulative sum of log returns
+            # starting from the log of our anchor
+            log_anchor = np.log(self.anchors[j])
             
-        
-            curr_log_price = np.log(anchors[i] if anchors[i] > 0 else 1e-8)
+            # The reconstructed log prices are: log_anchor + cumsum(diffs)
+            reconstructed_log = log_anchor + np.cumsum(diff_series)
+            res.append(np.exp(reconstructed_log))
             
-    
-            if is_full_reconstruction:
-                reconstructed_row.append(np.exp(curr_log_price))
-
-   
-            for j in range(len(row)):
-                curr_log_price += row[j]
-                reconstructed_row.append(np.exp(curr_log_price))
-            
-            chunk.append(reconstructed_row)
-            
-        return np.vstack(chunk)
+        return np.vstack(res)             
 
 class RowWiseMinMaxScaler(BaseProcessor):
     def __init__(self, factor=[0,1]):
@@ -195,5 +161,4 @@ class SlidingWindow(BaseProcessor):
 
     def inverse_transform(self, data):
         return super().inverse_transform(data)
-
 

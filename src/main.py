@@ -1,29 +1,26 @@
 from ensemble_factory import EnsembleFactory as ensem
 from strategies import MLStrategy, HybridStrategy, ArimaStrategy
-from preprocessors import DiffByRow, RowWiseMinMaxScaler, NormalizeByRow
+from preprocessors import LogDiffByRow, RowWiseMinMaxScaler, NormalizeByRow
 import numpy as np
 from sklearn.metrics import mean_squared_error, r2_score
 import joblib
 from config.config import *
-from plots import MultiPlot
+from plots import MultiPlot, ResidPlot, MultiLineResidPlot, MultiLinePlot
 
 train_data_path = RAW_DATA_DIR / "train_data_raw.npy"
 test_data_path = RAW_DATA_DIR / "test_data_raw.npy"
-a = np.load(train_data_path)
-b = np.load(test_data_path)
+a = np.load(train_data_path)[0:4]
+b = np.load(test_data_path)[0:4]
 
-arima_model = ArimaStrategy()
+arima_model = ArimaStrategy(preprocessors=[LogDiffByRow()])
 
-arima_res = arima_model.run(a, b, True)
+res = arima_model.run(a, b, True)
 
-svr_params = {"kernel":['rbf'], "C":[10, 100], "epsilon":[0.1], "window_size":[7]}
-svr_model = MLStrategy(ensem.svr(), [RowWiseMinMaxScaler()])
-hybrid_strat = HybridStrategy(arima_model, svr_model, True)
+print(f"True:{b}\nPreds:{res}")
+plot_dict = {"DUMMY": (b[0], res[0]), "DUMMY 2": (b[1], res[1]), "DUMMY 3": (b[2], res[2]), "DUMMY 4": (b[3], res[3])}
 
-res = hybrid_strat.run(a, b, svr_params, test_size=50, jump_size=30, trace=True)
+p = MultiPlot("test")
 
-plot_dict = {"DUMMY": (b, res)}
+q = MultiLinePlot("test residuals", ["green", "blue", "black", "yellow"])
+q.plot(b[0], plot_dict, figsize=(16,9))
 
-svrPlot = MultiPlot("SVR test plot")
-
-svrPlot.plot(plot_dict, 1, (15,10))

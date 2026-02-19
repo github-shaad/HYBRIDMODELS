@@ -22,6 +22,5 @@ folders = [DATA_DIR, RAW_DATA_DIR, PREDICTIONS_DIR,
            MODELS_DIR,
            STATISTICS_DIR, DATA_STATISTICS, MODEL_STATISTICS, PORTFOLIO_STATISTICS]
 
-
 for folder in folders:
     folder.mkdir(parents=True, exist_ok=True)
