@@ -9,7 +9,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 
-class EnsembleFactory:
+class ModelFactory:
     """
     Simple Wrapper Class for ML Regressors and ensembles as well.
     Passes Model params straight down and returns the respective model with those parameters.

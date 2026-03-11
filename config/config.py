@@ -18,9 +18,16 @@ DATA_STATISTICS = STATISTICS_DIR / "data_statistics"
 MODEL_STATISTICS = STATISTICS_DIR / "model_statistics"
 PORTFOLIO_STATISTICS = STATISTICS_DIR / "portfolio_statistics"
 
+FIGURES_DIR = ROOT_DIR / "figures"
+MODEL_FIGURES = FIGURES_DIR / "model_figures"
+PORTFOLIO_FIGURES = FIGURES_DIR / "portfolio_figures"
+
 folders = [DATA_DIR, RAW_DATA_DIR, PREDICTIONS_DIR,
            MODELS_DIR,
-           STATISTICS_DIR, DATA_STATISTICS, MODEL_STATISTICS, PORTFOLIO_STATISTICS]
+           STATISTICS_DIR, DATA_STATISTICS, MODEL_STATISTICS, PORTFOLIO_STATISTICS, FIGURES_DIR,
+           MODEL_FIGURES, PORTFOLIO_FIGURES]
 
 for folder in folders:
     folder.mkdir(parents=True, exist_ok=True)
+    if __name__ == "__main__":
+        print(str(folder))

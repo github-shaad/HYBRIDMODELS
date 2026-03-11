@@ -2,11 +2,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
+
 class MultiPlot:
     def __init__(self, title, true_color='blue', pred_color='red'):
         self.title = title
         self.true_color = true_color
         self.pred_color = pred_color
+        self.fig = None
 
     def plot(self, data_dict, cols=3, figsize_per_plot=(5, 4)):
         """
@@ -44,13 +46,20 @@ class MultiPlot:
         # Hide unused subplots if n_plots is not a perfect multiple of cols
         for j in range(i + 1, len(axes_flat)):
             axes_flat[j].axis('off')
-
-        plt.show()
-
+        
+        self.fig = fig
+    
+    def show(self):
+        if self.fig is not None:
+            self.fig.show()
+        else:
+            raise ValueError("Figure not created!!")
+        
 class ResidPlot:
     def __init__(self, title, res_color='green'):
         self.title = title
         self.res_color = res_color
+        self.fig = None
 
     def plot(self, data_dict, cols=3, figsize_per_plot=(5, 4)):
         """
@@ -87,37 +96,70 @@ class ResidPlot:
         # Hide unused subplots if n_plots is not a perfect multiple of cols
         for j in range(i + 1, len(axes_flat)):
             axes_flat[j].axis('off')
+        
+        self.fig = fig
 
-        plt.show()
+        
+    def show(self):
+        if self.fig is not None:
+            self.fig.show()
+        else:
+            raise ValueError("Figure not created!!")    
 
 class MultiLineResidPlot:
     def __init__(self, title, colors):
         self.title = title
         self.colors = colors
+        self.fig = None
 
     def plot(self, data_dict, figsize):
-        plt.title(self.title)
-        plt.figure(figsize=figsize)
-
+        fig, ax = plt.subplots(figsize= figsize)
+        
         for i, (ticker, (true_val, pred_val)) in enumerate(data_dict.items()):
-            plt.plot(true_val - pred_val, color=self.colors[i], label=ticker)  
-            plt.legend()
+            ax.plot(true_val - pred_val, color=self.colors[i], label=ticker)  
+            ax.legend()
+        ax.set_title(self.title)
+        ax.set_xlabel("Time")    
+        ax.set_ylabel("Residuals")
+        self.fig = fig
 
-        plt.show()
+
+    def show(self):
+        if self.fig is not None:
+            self.fig.show()
+        else:
+            raise ValueError("No Figure Created!!!")    
 
 class MultiLinePlot:
     def __init__(self, title, colors):
         self.title = title
         self.colors = colors
-
+        self.fig = None
+        
     def plot(self, true_val, data_dict, figsize):
-        plt.title(self.title)
-        plt.figure(figsize=figsize)
+        fig, ax = plt.subplots(figsize=figsize)
+
         plt.plot(true_val, color="black", label="True")
         for i, (ticker, (_, pred_val)) in enumerate(data_dict.items()):
-            plt.plot(pred_val, color=self.colors[i], label=ticker)  
-            plt.legend()
-        plt.show()
+            ax.plot(pred_val, color=self.colors[i], label=ticker)  
+            ax.legend()
+        
+        ax.set_title(self.title)
+        ax.set_xlabel("")
+        self.fig = fig
+    
+    def show(self):
+        if self.fig is not None:
+            self.fig.show()
+        else:
+            raise ValueError("No Figure Created!!!")    
 
 class MDDPlot:
+    """
+    Maximum Drawdown Plots
+    """
+    
     pass
+
+m = MultiLineResidPlot("cine", ["blue"])
+m.plot({}, (20,6))
