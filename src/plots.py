@@ -102,7 +102,7 @@ class ResidPlot:
         
     def show(self):
         if self.fig is not None:
-            self.fig.show()
+            plt.show()
         else:
             raise ValueError("Figure not created!!")    
 
@@ -126,7 +126,7 @@ class MultiLineResidPlot:
 
     def show(self):
         if self.fig is not None:
-            self.fig.show()
+            plt.show()
         else:
             raise ValueError("No Figure Created!!!")    
 
@@ -154,12 +154,27 @@ class MultiLinePlot:
         else:
             raise ValueError("No Figure Created!!!")    
 
-class MDDPlot:
-    """
-    Maximum Drawdown Plots
-    """
-    
-    pass
 
-m = MultiLineResidPlot("cine", ["blue"])
-m.plot({}, (20,6))
+class BacktestPlot:
+    def __init__(self, title, colors):
+        self.title = title
+        self.colors = colors
+        self.fig = None
+    
+    def plot(self, curves:dict, figsize):
+        fig, ax = plt.subplots(figsize=figsize)
+
+        for i, (model, curve) in enumerate(curves.items()):
+            ax.plot(curve, color=self.colors[i], label=model)
+            ax.legend()
+
+        ax.set_title(self.title)
+        ax.set_xlabel("")
+        self.fig = fig
+    
+    def show(self):
+        if self.fig is not None:
+            plt.show()
+        else:
+            raise ValueError("No Figure created !!!")
+            
