@@ -29,6 +29,7 @@ class PipeLine:
             self.steps = steps
 
     def fit_transform(self, data):
+        x = data.copy()
         for step in self.steps:
             step.fit_transform(data)
 

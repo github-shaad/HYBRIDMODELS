@@ -2,12 +2,7 @@ import numpy as np
 from portfolio import BlackLittermanPortfolio as Bl
 from config.config import *
 
-num_assets = 25
-train_days = 2011
-test_days = 503
-total_days = train_days + test_days 
 
-dummy_market_caps = np.random.uniform(low=100, high=1000, size=(total_days, num_assets))
 
 class BackTesting:
     def __init__(self, market_caps, train_data, test_data, predictions, risk_averion, lookback_window, testing_length):
@@ -48,17 +43,18 @@ class BackTesting:
         
         return np.array(daily_portfolio_value)
             
-    def mddCurve(self):
-        pass
+    def equityDrawdownCurve(self, initial_value):
+        equity_curve = self.equityCurve(initial_value)
+        drawdown_curve = []
+        
+        for i in range(np.shape(equity_curve)[0]):
+            peak = np.max(equity_curve[:i+1])
+            drawdown = (equity_curve[i] - peak) / peak
+            drawdown_curve.append(drawdown)
+
+        return np.column_stack((equity_curve, np.array(drawdown_curve)))
+  
 
 
 if __name__ == "__main__":
-    train_path = RAW_DATA_DIR / "train_data_raw.npy"
-    test_path = RAW_DATA_DIR / "test_data_raw.npy"
-    pred_path = PREDICTIONS_DIR / "model_predictions" / "arima.npy"
-    hist = np.load(train_path)
-    preds = np.load(pred_path)
-    test = np.load(test_path)
-    
-    tester = BackTesting(dummy_market_caps, hist, test, preds, 2.5, 100, 20)
-    print(tester.equityCurve(10000))
+    pass

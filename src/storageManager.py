@@ -4,7 +4,7 @@ Simple Class to save data/models/statistics/plots.
 from config.config import *
 import numpy as np
 import openpyxl
-import plots
+from plots import *
 class StorageManager:
     def __init__(self):
         pass

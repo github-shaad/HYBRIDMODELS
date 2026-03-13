@@ -36,20 +36,20 @@ class ModelFactory:
         return SklearnGRU(**params)
     
     @staticmethod
-    def votingEnsemble(models=None):
-        return VotingRegressor(models)
+    def votingRegressor(models=None):
+        return VotingRegressor(estimators=models)
     
     @staticmethod
-    def StackingEnsemble(models=None):
-        return StackingRegressor(models)
+    def StackingRegressor(models=None):
+        return StackingRegressor(estimators=models)
     
     @staticmethod
-    def RandomForestRegressor(models=None):
-        return RandomForestRegressor(models)
+    def RandomForestRegressor(**params):
+        return RandomForestRegressor(**params)
     
     @staticmethod
-    def GradientBoostingEnsemble(models=None):
-        return GradientBoostingRegressor(models)
+    def GradientBoostingRegressor(**params):
+        return GradientBoostingRegressor(**params)
     
 class _InternalLSTM(nn.Module):
     """

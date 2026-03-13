@@ -155,13 +155,13 @@ class MultiLinePlot:
             raise ValueError("No Figure Created!!!")    
 
 
-class BacktestPlot:
+class BacktestEquityPlot:
     def __init__(self, title, colors):
         self.title = title
         self.colors = colors
         self.fig = None
     
-    def plot(self, curves:dict, figsize):
+    def plot(self, curves:dict, figsize=(10,6)):
         fig, ax = plt.subplots(figsize=figsize)
 
         for i, (model, curve) in enumerate(curves.items()):
@@ -178,3 +178,5 @@ class BacktestPlot:
         else:
             raise ValueError("No Figure created !!!")
             
+class BacktestEquityDrawdownPlot:
+    pass
