@@ -45,6 +45,18 @@ class PipeLine:
             x = step.inverse_transform(x)    
         return x    
 
+class Naive(BaseProcessor):
+    def __init__(self):
+        pass
+
+    def fit_transform(self, data):
+        return data
+    
+    def transform(self, data):
+        return data
+    
+    def inverse_transform(self, data):
+        return data
 
 
 class NormalizeByRow(BaseProcessor):
@@ -107,7 +119,46 @@ class LogDiffByRow(BaseProcessor):
             reconstructed_log = log_anchor + np.cumsum(diff_series)
             res.append(np.exp(reconstructed_log))
             
-        return np.vstack(res)             
+        return np.vstack(res)           
+      
+class LogDiffByRowSpecial(BaseProcessor): # Assuming it inherits from BaseProcessor
+    def __init__(self):
+        self.anchors = [] 
+        self.test_reference_prices = None # <-- THE BACKDOOR
+
+    def fit_transform(self, data):
+        self.anchors = [series[-1] for series in data]
+        return self.transform(data)
+    
+    def transform(self, data):
+        res = []
+        for series in data:
+            log_series = np.log(series)
+            diffs = np.zeros_like(log_series)
+            diffs[1:] = np.diff(log_series)
+            res.append(diffs)
+        return np.vstack(res)
+    
+    def inverse_transform(self, data):
+        res = []
+        for j, diff_series in enumerate(data):
+            # If we provided the actual test data (Backtesting Mode)
+            if self.test_reference_prices is not None:
+                # Build the array of ACTUAL yesterday prices: [Train Anchor, Test_Day_0, Test_Day_1, ...]
+                actual_prev_prices = np.concatenate(([self.anchors[j]], self.test_reference_prices[j, :-1]))
+                
+                # Add today's predicted return to yesterday's ACTUAL price (NO CUMSUM)
+                reconstructed_log = np.log(actual_prev_prices) + diff_series
+                res.append(np.exp(reconstructed_log))
+                
+            # If we are flying blind into the future (Live Trading Mode)
+            else:
+                log_anchor = np.log(self.anchors[j])
+                reconstructed_log = log_anchor + np.cumsum(diff_series)
+                res.append(np.exp(reconstructed_log))
+                
+        return np.vstack(res)
+    
 
 class RowWiseMinMaxScaler(BaseProcessor):
     def __init__(self, factor=[0,1]):
@@ -136,8 +187,48 @@ class RowWiseMinMaxScaler(BaseProcessor):
             x.append(series_new)
 
         return np.vstack(x)
-        
+import numpy as np
 
+class DiffByRow(BaseProcessor): 
+    def __init__(self):
+        self.anchor_prices = None
+
+    def fit_transform(self, data):
+        # Save ONLY the final column of the known data to anchor future predictions
+        self.anchor_prices = data[:, -1]
+        return self.transform(data)
+    
+    def transform(self, data):
+        # Calculate returns: (P_t - P_{t-1}) / P_{t-1}
+        returns = np.diff(data, axis=1) / data[:, :-1]
+        
+        # Pad the first column with zeros to maintain the exact same shape as input
+        zero_padding = np.zeros((data.shape[0], 1))
+        padded_returns = np.hstack((zero_padding, returns))
+        
+        return padded_returns
+    
+    def inverse_transform(self, predicted_returns):
+        """
+        Converts predicted future returns back into raw prices, 
+        springboarding off the last known prices from fit_transform.
+        """
+        if self.anchor_prices is None:
+            raise ValueError("Anchor prices not found. Run fit_transform first.")
+            
+        # P_t = P_anchor * cumulative_product(1 + R_t)
+        cum_returns = np.cumprod(1 + predicted_returns, axis=1)
+        projected_prices = self.anchor_prices[:, None] * cum_returns
+        
+        return projected_prices
+
+class Cleaner:
+    @staticmethod
+    def clip(data, lower_percentile, upper_percentile):
+        lower_bound = np.percentile(data, lower_percentile, axis=0)
+        upper_bound = np.percentile(data, upper_percentile, axis=0)
+        return np.clip(data, lower_bound, upper_bound)
+    
     
 class SlidingWindowNormalize(BaseProcessor):
     def __init__(self, windowSize):

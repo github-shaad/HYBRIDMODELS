@@ -1,9 +1,7 @@
 Hybrid ARIMA - ML quantitative trading strategies: A comparison.
 
-Description:
 
-
-
+Run main.py to execute the example strategy.
 
 
 How to completely execute a strategy:
@@ -19,9 +17,12 @@ How to completely execute a strategy:
 10. save statistics
 
 
+
+
+
 Strategies to test:
 1. Arima (Raw, Differenced). Expand the hyperparameter search space.
 2. Ml only (xgb, mlp, svr, xgb, lstm, gru) and ensembles (...)
-3. Hybrid-Single Ml (). Contract the arima hyperparameter search space.
+3. Hybrid-Ml . Contract the arima hyperparameter search space.
 
 
