@@ -5,21 +5,16 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 import numpy as np
 import pandas as pd
-import joblib
-import json
 from model_factory import ModelFactory as models
 from strategies import VARStrategy
 from engineer_features import Features
-from numpy.lib.stride_tricks import sliding_window_view
 from strategies import _Validation
 from sklearn.model_selection import ParameterGrid
 from plots import BacktestEquityDrawdownPlot
 from metrics import Metrics
-from backtesting import BackTesting, SimpleMarketWeightBacktest, NakedSignalBacktest, RankedBackTesting2
+from backtesting import RankedBackTesting2
 from storageManager import StorageManager, PlotSave
-from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, r2_score
-from sklearn.preprocessing import RobustScaler, QuantileTransformer
+from sklearn.metrics import r2_score
 def smooth_exact_shape(data_matrix, window=5, method='ema'):
     df = pd.DataFrame(data_matrix.T)
     if method == 'ema':
