@@ -84,7 +84,7 @@ VARMAX-ML/
 │   ├── plots.py                            # Matplotlib/Plotly visualization utilities
 │   ├── preprocessors.py                    # Data scaling and normalization
 │   ├── storageManager.py                   # I/O utilities for saving/loading assets
-│   ├── strategies.py                       #  strategies(redundant)
+│   ├── strategies.py                       # strategies(redundant)
 │   ├── [ml]-train-and-test.py              # ML specific pipelines (gbr, lstm, mlp, lgbm, svr)
 │   ├── varmax-train-and-test.py            # Base linear model pipeline
 │   └── statistical-significance*.py        # Monte Carlo Permutation test scripts
