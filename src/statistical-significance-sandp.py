@@ -5,11 +5,11 @@ warnings.filterwarnings("ignore", category=UserWarning)
 import numpy as np
 import os
 from metrics import Metrics
-MODEL_NAME = "VARMAX"
+MODEL_NAME = "VARMAX-LSTM"
+N_RUNS = 5000
+PERCENT_SIG = 0.1
 model_equity_curve = np.load(PREDICTIONS_DIR / "portfolio_predictions" / f"{MODEL_NAME}.npy")
 sandp = np.load(RAW_DATA_DIR / "sandp_prices.npy")[-len(model_equity_curve):]
-
-
 def drawdown(equity_curve):
     running_max = np.maximum.accumulate(equity_curve)
         
@@ -46,7 +46,7 @@ random_diffs_cagr = []
 random_diffs_mdd = []
 random_diffs_calmar = []
 
-N_RUNS = 5000
+
 print(f"\nRunning {N_RUNS} permutations...")
 for i in range(N_RUNS):
     print(MODEL_NAME)
@@ -78,7 +78,7 @@ p_vals = [("sharpe",p_value_sharpe), ("sortino",p_value_sortino),
 
 for p in p_vals:
     print(f"P_val {p[0]} = {p[1]}")
-    if p[1] < 0.1:
+    if p[1] < PERCENT_SIG:
         print(f"Reject Null. {p[0]} Statistically different from S and P")
     else:
         print(f"{p[0]} fails to be statistically different from SandP")

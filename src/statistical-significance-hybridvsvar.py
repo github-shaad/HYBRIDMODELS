@@ -6,6 +6,8 @@ import numpy as np
 from metrics import Metrics
 
 MODEL_NAME = "VARMAX-MLP"
+N_RUNS = 5000
+PERCENT_SIG = 0.05
 print(MODEL_NAME)
 
 var_equity_curve = np.load(PREDICTIONS_DIR / "portfolio_predictions" / "VARMAX.npy")
@@ -25,7 +27,7 @@ random_diffs_cagr = []
 random_diffs_mdd = []
 random_diffs_calmar = []
 
-N_RUNS = 5000
+
 print(f"\nRunning {N_RUNS} permutations...")
 for i in range(N_RUNS):
     # Create a random boolean mask (50/50 chance to swap each day's return)
@@ -53,10 +55,9 @@ p_value_calmar = np.sum(np.array(random_diffs_calmar) >= actual_diff_calmar) / N
 p_vals = [("sharpe",p_value_sharpe), ("sortino",p_value_sortino),
           ("cagr", p_value_cagr), ("mdd",p_value_mdd), ("calmar", p_value_calmar)]
 
-
 for p in p_vals:
     print(f"P_val {p[0]} = {p[1]}")
-    if p[1] < 0.05:
+    if p[1] < PERCENT_SIG:
         print(f"Reject Null. {p[0]} Statistically different from VARMAX")
     else:
         print(f"{p[0]} fails to be statistically different from VARMAX")

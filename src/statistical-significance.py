@@ -11,9 +11,14 @@ import os
 MONTE CARLO STATISTICAL SIGNIFICANCE TEST OF SIGNALS. WE TEST IF OUR MODEL SIGNALS ARE STATISTICALLY DIFFERENT FROM 
 RANDOM SIGNALS.
 """
-MODEL_NAME = "VARMAX-MLP"
-model_predictions = np.load(PREDICTIONS_DIR / "model_predictions" / f"{MODEL_NAME}.npy")[:,4:]
-model_equity_curve = np.load(PREDICTIONS_DIR / "portfolio_predictions" / f"{MODEL_NAME}.npy")[4:]
+MODEL_NAME = "VARMAX-LSTM"
+PERCENT_SIG = 0.05
+N_RUNS = 5000
+offset_for_not_lstm = 4
+if MODEL_NAME == "VARMAX-LSTM":
+    offset_for_not_lstm = 0
+model_predictions = np.load(PREDICTIONS_DIR / "model_predictions" / f"{MODEL_NAME}.npy")[:,offset_for_not_lstm:] 
+model_equity_curve = np.load(PREDICTIONS_DIR / "portfolio_predictions" / f"{MODEL_NAME}.npy")[offset_for_not_lstm:]
 prices = np.load(RAW_DATA_DIR / "PRICES.npy")[:,:]
 
 
@@ -58,7 +63,7 @@ cagrs = []
 mdds = []
 calmars = []
 
-N_RUNS = 5000
+
 for i in range(N_RUNS):
     print(MODEL_NAME)
     print(f"Iteration:{i+1}")
@@ -86,7 +91,7 @@ p_vals = [("sharpe",p_value_sharpe), ("sortino",p_value_sortino),
 
 for p in p_vals:
     print(f"P_val {p[0]} = {p[1]}")
-    if p[1] < 0.05:
+    if p[1] < PERCENT_SIG:
         print(f"Reject Null. {p[0]} Statistically different from Random Signals")
     else:
         print(f"{p[0]} fails to be statistically different Random Signals")

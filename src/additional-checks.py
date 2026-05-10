@@ -6,8 +6,11 @@ import numpy as np
 from metrics import Metrics
 from scipy.stats import skew
 MODEL_NAME = "VARMAX-MLP"
+offset_for_not_lstm = 4
+if MODEL_NAME == "VARMAX-LSTM":
+    offset_for_not_lstm = 0
 print(MODEL_NAME)
-equity_curve = np.load(PREDICTIONS_DIR / "portfolio_predictions" / f"{MODEL_NAME}.npy")[4:]
+equity_curve = np.load(PREDICTIONS_DIR / "portfolio_predictions" / f"{MODEL_NAME}.npy")[offset_for_not_lstm:]
 sandp_equity_curve = np.load(PREDICTIONS_DIR / "portfolio_predictions" / "S_and_P_500.npy")[-len(equity_curve):]
 
 def returns(curve):
