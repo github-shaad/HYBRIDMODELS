@@ -5,7 +5,8 @@ warnings.filterwarnings("ignore", category=UserWarning)
 import numpy as np
 from metrics import Metrics
 from scipy.stats import skew
-MODEL_NAME = "VARMAX-MLP"
+
+MODEL_NAME = "VARMAX-LGBM"
 offset_for_not_lstm = 4
 if MODEL_NAME == "VARMAX-LSTM":
     offset_for_not_lstm = 0
@@ -43,9 +44,13 @@ for i in range(len(equity_curve) - 60):
         positive_sortino +=1
     rolling_metric.append(metric)
 print(f"Positive Sortino {positive_sortino / (len(equity_curve) - 60)}")
-#plt.figure(figsize=(10,6))
-#plt.plot(rolling_metric)
-#plt.show()
+
 
 #Return Correlation check
 print(f"COrr - {np.corrcoef(returns(sandp_equity_curve), returns(equity_curve))}")
+
+cov = np.cov(returns(equity_curve), returns(sandp_equity_curve))[0,1]
+var = np.var(returns(sandp_equity_curve))
+beta = cov / var
+#Return Beta
+print(f"Beta - {beta}")

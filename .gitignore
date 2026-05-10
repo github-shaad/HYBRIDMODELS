@@ -54,3 +54,4 @@ figures/
 saved_models/
 saved_params/
 predictions/
+.env

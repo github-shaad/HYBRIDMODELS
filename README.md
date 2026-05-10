@@ -56,23 +56,40 @@ The figures below demonstrate the effectiveness of our hybrid VARMAX-MLP approac
 
 ```text
 VARMAX-ML/
+├── config/
+│   └── config.py                           # Global variables and hyperparameters
 ├── data/
-│   └── raw_data/               # Raw US Telecom dataset and exogenous variables
+│   ├── image_for_github/                   # Images and banners used in the README
+│   ├── predictions/                        # Raw prediction outputs (.npy format)
+│   │   ├── model_predictions/              # Extracted time-series predictions
+│   │   └── portfolio_predictions/          # Outputted equity curves / portfolio states
+│   └── raw_data/                           # Raw datasets, market caps, and ticker lists
 ├── docs/
-│   └── Report.pdf              # Comprehensive project report and methodology
-├── models/
-│   ├── saved_params/           # Best model parameters saved post-training
-│   └── ...                     # Core model architectures
-├── outputs/
-│   ├── model_predictions/      # Model predictions (matrix of time series)
-│   ├── model_statistics/       # Raw performance metrics and stats
-│   ├── Portfolio_predictions/  # Equity curves for various strategies
-│   ├── model_figures/          # Visuals of True vs Predicted time series
-│   └── portfolio_figures/      # Equity-drawdown curves and S&P 500 comparisons
-├── scripts/
-│   ├── config.py                           # Initial setup and hyperparameters
-│   ├── [ML]-train-and-test.py              # ML Training, validation, and backtesting loop
-│   ├── statistical-significance.py         # Monte Carlo permutation vs random signals
-│   ├── statistical-significance-sandp.py   # Stat sig vs S&P 500
-│   └── statistical-significance-hybridvsvar.py # Stat sig vs base VARX
-├── requirements.txt            # Core dependencies
+│   └── Report.pdf                          # Comprehensive project report and methodology
+├── figures/
+│   ├── model_figures/                      # Visual comparisons of True vs Predicted values
+│   └── portfolio_figures/                  # Equity curves, drawdown, and S&P 500 comparisons
+├── saved_models/                           # Serialized model weights (.joblib files)
+│   ├── hybrid/                             # VARMAX-ML hybrid combinations
+├── saved_params/                           # Optimized model hyperparameters saved as JSON
+├── src/                                    # Core source code and execution scripts
+│   ├── additional-checks.py                # Robustness checks and skewness tests
+│   ├── backtesting.py                      # backtesting
+│   ├── engineer_features.py                # Feature engineering and transformation
+│   ├── metrics.py                          # Financial and statistical evaluation metrics
+│   ├── model_factory.py                    # Factory logic for model creation
+│   ├── plots.py                            # Matplotlib/Plotly visualization utilities
+│   ├── preprocessors.py                    # Data scaling and normalization
+│   ├── storageManager.py                   # I/O utilities for saving/loading assets
+│   ├── strategies.py                       #  strategies(redundant)
+│   ├── [ml]-train-and-test.py              # ML specific pipelines (gbr, lstm, mlp, lgbm, svr)
+│   ├── varmax-train-and-test.py            # Base linear model pipeline
+│   └── statistical-significance*.py        # Monte Carlo Permutation test scripts
+├── statistics/
+│   ├── data_statistics/                    # Exploratory data analysis stats
+│   ├── model_statistics/                   # Forecast performance (MSE, RMSE, etc.)
+│   └── portfolio_statistics/               # Trading metrics (Sharpe, Drawdown, Calmar)
+├── .env                                    # Environment variables (do not commit)
+├── .gitignore                              # Git ignore rules
+├── README.md                               # Project documentation
+└── requirements.txt                        # Core Python dependencies
