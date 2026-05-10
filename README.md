@@ -1,4 +1,5 @@
-This project aims to implement a number of  daily long short market neutral strategies aimed at the US telecommunications equity sector. We implement a few VARMAX-ML(Vector AutoRegression Moving Average with Exogenous Variables - Machine Learning) hybrid learning algorithms which is based on the theoretical framework by [citation needed]. We demonstrate that atleast one of the strategies generated consistent alpha uncorrelated with the S&P500 using Monte Carlo Permutation Tests, Skewness Checks, Rolling Metrics and other Robustness CHecks. We were able to generate a strategy/ies that is low volatility and is suitable for leveraged portfolios. 
+# Hybrid VARMAX-ML trading strategies
+This project aims to implement a number of  daily long short market neutral strategies aimed at the US telecommunications equity sector. We implement a few VARMAX-ML(Vector AutoRegression Moving Average with Exogenous Variables - Machine Learning) hybrid learning algorithms. We extend the framework proposed by [Zhang 2003][paper]. We demonstrate that atleast one of the strategies generated consistent alpha uncorrelated with the S&P500 using Monte Carlo Permutation Tests, Skewness Checks, Rolling Metrics and other Robustness CHecks. We were able to generate a strategy/ies that is low volatility and is suitable for leveraged portfolios. 
 Running the strategy and getting results:
 1. Run the config file once.
 2. Run [ML]-train-and-test.py to automatically run for a certain VARMAX-[ML] strategy:
@@ -10,4 +11,6 @@ Running the strategy and getting results:
     1. statistical-significance-hybridvsvar : For stat. sig. of Hybrid VARMAX-[ML] vs base VARX
     2. statistical-significance-sandp : For stat. sig. of VARMAX-[ML] / VARX against S&P500
     3. statistical-significance : For stat. sig. of VARMAX-[ML] / VARX against random signals
-model_figures stores the true vs predicted time series for the test set and comparisons with the base VARMAX , while portfolio_figures stores equity-drawdown curves and comparisons with the S&P500 as well. raw_data stores all the raw data needed, model_predictions the predictions as a matrix of time series. Portfolio_predictions stores the equity curves for various strategies, saved_params saves the best model parameters. model_statistics
+model_figures stores the true vs predicted time series for the test set and comparisons with the base VARMAX , while portfolio_figures stores equity-drawdown curves and comparisons with the S&P500 as well. raw_data stores all the raw data needed, model_predictions the predictions as a matrix of time series. Portfolio_predictions stores the equity curves for various strategies, saved_params saves the best model parameters. model_statistics.
+
+[paper] : https://doi.org/10.1016/S0925-2312(01)00702-0
