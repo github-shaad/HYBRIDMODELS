@@ -8,7 +8,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Sector](https://img.shields.io/badge/Sector-US_Telecommunications-lightgrey.svg)]()
 
-This project aims to implement a number of  daily long short market neutral strategies aimed at the US telecommunications equity sector. We extend the framework proposed by [Zhang (2003)](https://doi.org/10.1016/S0925-2312(01)00702-0) by using a Vector AutoRegression with Exogenous Variables as the linear baseline and an ML algorithm as a non-linear correction term. We demonstrate that atleast one of the strategies generated consistent alpha uncorrelated with the S&P500 using Monte Carlo Permutation Tests, Skewness Checks, Rolling Metrics and other tests. We were able to generate a strategy that is low volatility and is suitable for leveraged portfolios.  
+This project aims to implement a number of  daily long short market neutral strategies aimed at the US telecommunications equity sector. We apply the framework proposed by [Zhang (2003)](https://doi.org/10.1016/S0925-2312(01)00702-0) by using a Vector AutoRegression with Exogenous Variables as the linear baseline and an ML algorithm as a non-linear correction term. We demonstrate that atleast one of the strategies generated consistent alpha uncorrelated with the S&P500 using Monte Carlo Permutation Tests, Skewness Checks, Rolling Metrics and other tests. We were able to generate a strategy that is low volatility and is suitable for leveraged portfolios.  
 Check out the full report [here](docs/Report.pdf) 
 
 The naming conventions to be used for ML models:
